@@ -14,8 +14,11 @@ import {
   SignedIn,
   SignedOut,
 } from "@clerk/nextjs";
+import { useConvexAuth } from "convex/react";
+import { Spinner } from "@/components/spinner";
 
 const Navbar = () => {
+  const { isAuthenticated, isLoading } = useConvexAuth();
   const scrolled = useScrollTop();
 
   return (
@@ -68,7 +71,8 @@ const Navbar = () => {
         {/* Actions */}
         <BoxReveal boxColor="#252525">
           <div className="flex items-center gap-4">
-            <SignedOut>
+            {isLoading && <Spinner size="lg" />}
+            {!isAuthenticated && !isLoading && (
               <div className="hidden md:flex items-center gap-4">
                 <SignInButton mode="modal">
                   <Button variant="ghost" size="sm">
@@ -79,10 +83,15 @@ const Navbar = () => {
                   <Button size="sm">Sign up</Button>
                 </SignUpButton>
               </div>
-            </SignedOut>
-            <SignedIn>
-              <UserButton afterSignOutUrl="/" />
-            </SignedIn>
+            )}
+            {isAuthenticated && !isLoading && (
+              <div className="flex items-center gap-4">
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/documents">Enter Potion</Link>
+                </Button>
+                <UserButton afterSignOutUrl="/" />
+              </div>
+            )}
             <ModeToggle />
           </div>
         </BoxReveal>
