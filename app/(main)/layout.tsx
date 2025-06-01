@@ -8,6 +8,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { SearchCommand } from "@/components/search-command";
 
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
@@ -38,6 +39,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={80}>
         <main className="h-full w-full">
+          <SearchCommand />
           <div className="h-full max-w-6xl mx-auto p-6">{children}</div>
         </main>
       </ResizablePanel>

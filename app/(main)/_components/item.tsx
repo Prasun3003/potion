@@ -8,6 +8,12 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { DropdownMenu, 
+    DropdownMenuContent,
+    DropdownMenuTrigger,DropdownMenuItem,
+    DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Trash } from "lucide-react";
+import { useUser } from "@clerk/clerk-react";
 interface ItemProps {
   id?: Id<"documents">;
   documentIcon?: string;
@@ -17,7 +23,7 @@ interface ItemProps {
   expanded?: boolean;
   onExpand?: () => void;
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
   icon: React.ReactNode;
 }
 
@@ -33,8 +39,26 @@ export const Item = ({
   onExpand,
   documentIcon,
 }: ItemProps) => {
+    const {user} = useUser();
     const router = useRouter();
     const create = useMutation(api.documents.create);
+    const archive = useMutation(api.documents.archive);
+
+    
+    const onArchive = (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+        event.stopPropagation();
+       if(!id) return;
+       const promise = archive({id})
+       toast.promise(promise, {
+        loading: "Moving to trash...",
+        success: "Note moved to trash!",
+        error: "Failed to move to trash!",
+       })
+    }
+
+
   const handleExpand = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -101,6 +125,24 @@ export const Item = ({
       )}
       {!!id && (
         <div className="ml-auto flex items-center gap-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild onClick={(e)=>e.stopPropagation()}>
+                <div className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600" role="button">
+                    <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-60" align="end" alignOffset={8} forceMount>
+                <DropdownMenuItem
+                onClick={onArchive}>
+                    <Trash className="h-4 w-4 mr-2" />
+                    Delete
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <div className="text-xs text-muted-foreground p-2">
+                    Last edited by {user?.fullName}
+                </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <div
             role="button"
             onClick={onCreate}

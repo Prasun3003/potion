@@ -17,13 +17,19 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/clerk-react";
 import { UserItem } from "./user-item";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useMutation } from "convex/react";
 import { toast } from "sonner";
 import { DocumentList } from "./document-list";
 import { Item } from "./item";
 import { api } from "@/convex/_generated/api";
 import { useTheme } from "next-themes";
+import { TrashBox } from "./trash-box";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useSearch } from "@/hooks/use-search";
+import { useSettings } from "@/hooks/use-settings";
+
+
+
 
 interface NavItem {
   icon: React.ReactNode;
@@ -40,7 +46,8 @@ const Navigation = () => {
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-
+  const searchStore = useSearch();
+  const settings = useSettings();
   // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
@@ -49,11 +56,11 @@ const Navigation = () => {
   const create = useMutation(api.documents.create);
 
   const onSearch = () => {
-    router.push("/search");
+    searchStore.onOpen();
   };
 
   const onSettings = () => {
-    router.push("/settings");
+    settings.onOpen();  
   };
 
   const handleCreate = () => {
@@ -171,6 +178,19 @@ const Navigation = () => {
             ))}
             <div className="mt-2">
               <DocumentList />
+              <Item
+                label="Add a page"
+                icon={<PlusCircle className="h-4 w-4" />}
+                onClick={handleCreate}
+              />
+            <Popover>
+                <PopoverTrigger className="w-full mt-4">
+                    <Item label="Trash" icon={<Trash className="h-4 w-4" />}/>
+                <PopoverContent side={isMobile? "bottom" : "right"}>
+                    <TrashBox />
+                </PopoverContent>
+                </PopoverTrigger>
+            </Popover>
             </div>
           </div>
         </div>
