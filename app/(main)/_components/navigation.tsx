@@ -2,23 +2,28 @@
 
 import {
   ChevronsLeft,
-  Plus,
   Search,
   Settings,
   Trash,
   FileIcon,
+  PlusCircle,
+  Moon,
+  Sun,
+  Laptop,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/clerk-react";
 import { UserItem } from "./user-item";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-
+import { useMutation } from "convex/react";
+import { toast } from "sonner";
+import { DocumentList } from "./document-list";
 import { Item } from "./item";
+import { api } from "@/convex/_generated/api";
+import { useTheme } from "next-themes";
 
 interface NavItem {
   icon: React.ReactNode;
@@ -28,16 +33,20 @@ interface NavItem {
 }
 
 const Navigation = () => {
-  const documents = useQuery(api.documents.get);
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useUser();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  const onCreatePage = () => {
-    router.push("/documents/new");
-  };
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const create = useMutation(api.documents.create);
 
   const onSearch = () => {
     router.push("/search");
@@ -47,12 +56,18 @@ const Navigation = () => {
     router.push("/settings");
   };
 
+  const handleCreate = () => {
+    const promise = create({
+      title: "Untitled",
+    });
+    toast.promise(promise, {
+      loading: "Creating note...",
+      success: "Note created successfully",
+      error: "Failed to create note",
+    });
+  };
+
   const actionItems: NavItem[] = [
-    {
-      label: "Search",
-      icon: <Search className="h-4 w-4" />,
-      onClick: onSearch,
-    },
     {
       label: "Settings",
       icon: <Settings className="h-4 w-4" />,
@@ -72,6 +87,16 @@ const Navigation = () => {
       href: "/trash",
     },
   ];
+
+  const toggleTheme = () => {
+    if (theme === "dark") {
+      setTheme("light");
+    } else if (theme === "light") {
+      setTheme("system");
+    } else {
+      setTheme("dark");
+    }
+  };
 
   return (
     <div className="h-full flex flex-col bg-[#1F1F1F] dark:bg-[#171717]">
@@ -100,23 +125,26 @@ const Navigation = () => {
         <div className="space-y-2">
           <div className={cn("px-2", !isCollapsed && "mb-1")}>
             <UserItem collapsed={isCollapsed} />
-            <Item onClick={()=>{}} label="New Page" icon={<Plus className="h-4 w-4" />}/>
+            <Item
+              label="Search"
+              icon={<Search className="h-4 w-4" />}
+              onClick={onSearch}
+              isSearch
+            />
+            <Item
+              onClick={handleCreate}
+              label="New Page"
+              icon={<PlusCircle className="h-4 w-4" />}
+            />
           </div>
           <div className="space-y-1 px-2">
             {actionItems.map((item) => (
-              <button
+              <Item
                 key={item.label}
-                onClick={item.onClick}
-                className={cn(
-                  "flex items-center w-full p-2 rounded-lg hover:bg-neutral-600/50 transition-colors text-white",
-                  isCollapsed && "justify-center"
-                )}
-              >
-                <div className="shrink-0 text-neutral-400">{item.icon}</div>
-                <span className={cn("ml-2 text-sm", isCollapsed && "hidden")}>
-                  {item.label}
-                </span>
-              </button>
+                label={item.label}
+                icon={item.icon}
+                onClick={item.onClick!}
+              />
             ))}
           </div>
         </div>
@@ -128,78 +156,57 @@ const Navigation = () => {
                 isCollapsed && "hidden"
               )}
             >
-             {/* {documents?.map((document)=>(
-                <div key={document._id}>
-                    {document.title}
-                </div>
-             ))} */}
+              Documents
             </p>
           </div>
-          <div className="space-y-1 px-2">
+          <div className="px-2">
             {documentItems.map((item) => (
-              <a
+              <Item
                 key={item.label}
-                href={item.href}
-                className={cn(
-                  "flex items-center w-full p-2 rounded-lg hover:bg-neutral-600/50 transition-colors text-white",
-                  isCollapsed && "justify-center",
-                  pathname === item.href && "bg-neutral-600/50"
-                )}
-              >
-                <div className="shrink-0 text-neutral-400">{item.icon}</div>
-                <span className={cn("ml-2 text-sm", isCollapsed && "hidden")}>
-                  {item.label}
-                </span>
-              </a>
+                label={item.label}
+                icon={item.icon}
+                onClick={() => router.push(item.href!)}
+                active={pathname === item.href}
+              />
             ))}
+            <div className="mt-2">
+              <DocumentList />
+            </div>
           </div>
-          {documents?.map((document) => (
-            <a
-              key={document._id}
-              href={`/documents/${document._id}`}
-              className={cn(
-                "flex items-center w-full p-2 rounded-lg hover:bg-neutral-600/50 transition-colors text-white",
-                isCollapsed && "justify-center",
-                pathname === `/documents/${document._id}` && "bg-neutral-600/50"
-              )}
-            >
-              <div className="shrink-0 text-neutral-400">
-                <FileIcon className="h-4 w-4" />
-              </div>
-              <span className={cn("ml-2 text-sm", isCollapsed && "hidden")}>
-                {document.title}
-              </span>
-            </a>
-          ))}
         </div>
       </div>
       <div className="mt-auto p-4">
-        <div
-          className={cn(
-            "flex items-center gap-x-2",
-            isCollapsed && "justify-center"
-          )}
-        >
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.imageUrl} />
-            <AvatarFallback className="bg-neutral-600 text-white">
-              {user?.firstName?.charAt(0)}
-              {user?.lastName?.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          <div
-            className={cn(
-              "flex flex-col justify-center",
-              isCollapsed && "hidden"
-            )}
-          >
-            <span className="text-sm font-medium line-clamp-1 text-white">
-              {user?.fullName || user?.username}
-            </span>
-            <span className="text-xs text-neutral-400 line-clamp-1">
-              {user?.emailAddresses[0].emailAddress}
-            </span>
-          </div>
+        <div className="space-y-2">
+          <Item
+            onClick={toggleTheme}
+            label={
+              mounted
+                ? `Theme: ${
+                    theme === "system"
+                      ? "System"
+                      : theme === "dark"
+                      ? "Dark"
+                      : "Light"
+                  }`
+                : "Theme"
+            }
+            icon={
+              mounted ? (
+                theme === "system" ? (
+                  <Laptop className="h-4 w-4" />
+                ) : theme === "dark" ? (
+                  <Moon className="h-4 w-4" />
+                ) : (
+                  <Sun className="h-4 w-4" />
+                )
+              ) : null
+            }
+          />
+          <Item
+            onClick={onSettings}
+            label="Workspace settings"
+            icon={<Settings className="h-4 w-4" />}
+          />
         </div>
       </div>
     </div>
