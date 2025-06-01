@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -17,21 +18,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
- 
-      <html lang="en" suppressHydrationWarning>
-        <body className={inter.className}>
-          <ConvexClientProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ConvexClientProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
+            <Toaster position="bottom-center" />
             {children}
-          </ThemeProvider> 
-          </ConvexClientProvider>
-        </body>
-      </html>
-    
+          </ThemeProvider>
+        </ConvexClientProvider>
+      </body>
+    </html>
   );
 }

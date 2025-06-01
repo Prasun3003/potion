@@ -3,6 +3,12 @@ import { useConvexAuth } from "convex/react";
 import { Spinner } from "@/components/spinner";
 import { redirect } from "next/navigation";
 import Navigation from "./_components/navigation";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useConvexAuth();
@@ -19,12 +25,24 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     return redirect("/");
   }
 
-  return <div className="h-full flex dark:bg-[#1F1F1F]">
-    <Navigation/>
-        <main className="flex-1 h-full overflow-y-auto">
-            {children}
+  return (
+    <ResizablePanelGroup direction="horizontal" className="min-h-screen">
+      <ResizablePanel
+        defaultSize={20}
+        minSize={15}
+        maxSize={30}
+        className="hidden md:block"
+      >
+        <Navigation />
+      </ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize={80}>
+        <main className="h-full w-full">
+          <div className="h-full max-w-6xl mx-auto p-6">{children}</div>
         </main>
-    </div>;
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  );
 };
 
 export default MainLayout;
