@@ -4,8 +4,12 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { BoxReveal } from "@/components/magicui/box-reveal";
 
+
 export default function Heading() {
+
   return (
+
+   
     <motion.div className="flex flex-col items-center justify-center pt-12">
       
         <section className="w-full  flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-b from-background to-secondary/20">
@@ -29,10 +33,7 @@ export default function Heading() {
               </h1> 
               </BoxReveal>
               {/* <BoxReveal boxColor="#252525"> */}
-              {/* <p className="max-w-[600px] text-muted-foreground text-lg md:text-xl">
-                Brew your ideas into reality with our powerful platform
-              </p> 
-              </BoxReveal> */}
+              
             </div>
           </div>
         </section>

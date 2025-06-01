@@ -1,10 +1,17 @@
 "use client";
 
 import Image from "next/image";
+import { useConvexAuth } from "convex/react"; 
 import { motion } from "framer-motion";
 import { BoxReveal } from "@/components/magicui/box-reveal";
+import { Spinner } from "@/components/spinner";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { SignInButton } from "@clerk/clerk-react";
 
 const Hero = () => {
+
+  const {isAuthenticated,isLoading} = useConvexAuth();
   return (
     <div className="pt-12 flex flex-col items-center justify-center relative w-full py-12 md:py-24 bg-gradient-to-b from-background/80 to-background">
       <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
@@ -32,14 +39,31 @@ const Hero = () => {
                 className="flex flex-wrap gap-4 justify-center md:justify-start pt-2"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <button className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground hover:opacity-90 transition shadow-lg hover:shadow-primary/25">
-                  Get Started
-                </button>
-                <button className="px-6 py-2.5 rounded-full border border-primary/20 hover:bg-primary/10 transition">
+                
+                >
+              {isLoading && (
+                <div className="w-full flex items-center justify-center">
+                  
+                  <Spinner/>
+                </div>
+              )}
+             {isAuthenticated && !isLoading && (
+                 <Button  asChild variant="outline" className="px-6 py-2.5 rounded-full border border-primary/20 hover:bg-primary/10 transition">
+                  <Link href="/documents">
+                    Enter Potion
+                  </Link>
+               </Button>
+             )}
+             {!isAuthenticated && !isLoading && (
+              <SignInButton mode = "modal">
+                <Button className="px-6 py-2.5 rounded-full border border-primary/20 hover:bg-primary/10 transition">
+                  Get Potion Free
+                </Button>
+              </SignInButton>
+             )}
+                <Button className="px-6 py-2.5 rounded-full border border-primary/20 hover:bg-primary/10 transition ">
                   Learn More
-                </button>
+                </Button>
               </motion.div>
             </BoxReveal>
           </div>
