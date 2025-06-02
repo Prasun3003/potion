@@ -11,93 +11,101 @@ const Footer = () => {
           {/* Company Info */}
           <div className="space-y-4">
             <BoxReveal boxColor="#252525">
-              <h3 className="text-lg font-semibold">Potion</h3>
-              <p className="text-sm text-muted-foreground">
-                Transforming ideas into reality with powerful tools and
-                innovation.
-              </p>
+              <div>
+                <h3 className="text-lg font-semibold">Potion</h3>
+                <p className="text-sm text-muted-foreground">
+                  Transforming ideas into reality with powerful tools and
+                  innovative solutions.
+                </p>
+              </div>
             </BoxReveal>
           </div>
 
           {/* Product */}
           <div className="space-y-4">
             <BoxReveal boxColor="#252525">
-              <h3 className="text-lg font-semibold">Product</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-primary transition">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary transition">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary transition">
-                    Documentation
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary transition">
-                    API Reference
-                  </Link>
-                </li>
-              </ul>
+              <div>
+                <h3 className="text-lg font-semibold">Product</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>
+                    <Link href="#" className="hover:text-primary transition">
+                      Features
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="#" className="hover:text-primary transition">
+                      Pricing
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="#" className="hover:text-primary transition">
+                      Documentation
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="#" className="hover:text-primary transition">
+                      API Reference
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </BoxReveal>
           </div>
 
           {/* Company */}
           <div className="space-y-4">
             <BoxReveal boxColor="#252525">
-              <h3 className="text-lg font-semibold">Company</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-primary transition">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary transition">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary transition">
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary transition">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
+              <div>
+                <h3 className="text-lg font-semibold">Company</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>
+                    <Link href="#" className="hover:text-primary transition">
+                      About Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="#" className="hover:text-primary transition">
+                      Blog
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="#" className="hover:text-primary transition">
+                      Careers
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="#" className="hover:text-primary transition">
+                      Contact
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </BoxReveal>
           </div>
 
           {/* Legal */}
           <div className="space-y-4">
             <BoxReveal boxColor="#252525">
-              <h3 className="text-lg font-semibold">Legal</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#" className="hover:text-primary transition">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary transition">
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-primary transition">
-                    Cookie Policy
-                  </Link>
-                </li>
-              </ul>
+              <div>
+                <h3 className="text-lg font-semibold">Legal</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>
+                    <Link href="#" className="hover:text-primary transition">
+                      Privacy Policy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="#" className="hover:text-primary transition">
+                      Terms of Service
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="#" className="hover:text-primary transition">
+                      Cookie Policy
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </BoxReveal>
           </div>
         </div>
