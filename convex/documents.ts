@@ -199,15 +199,13 @@ export const getById = query({
         if(!document) {
             throw new Error("Document not found");
         }
-       if(!document.isPublished && !document.isArchived) {
+
+        const userId = identity.subject;
+        if(document.userId !== userId) {
+            throw new Error("Unauthorized");
+        }
+
         return document;
-       }
-       const userId = identity.subject;
-       if(document.userId !== userId) {
-        throw new Error("Unauthorized");
-       }
-      
-     
     }
 })
 
