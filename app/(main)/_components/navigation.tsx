@@ -139,7 +139,7 @@ const Navigation = () => {
     setTimeout(() => {
       setIsResetting(false);
     }, 300);
-  }
+  };
 
   return (
     <div className="h-full flex flex-col bg-[#1F1F1F] dark:bg-[#171717]">
@@ -234,11 +234,15 @@ const Navigation = () => {
       <div
         ref={navbarRef}
         className={cn(
-          "absolute top-0 left-60 w-[calc(100%-240px)]",
+          "fixed top-0 z-[99999] w-[calc(100%-240px)]",
+          isCollapsed && "w-[calc(100%-60px)]",
           isScrolling && "shadow-sm",
-          isResetting && "tarnsition-all ease-in-out duration-300",
+          isResetting && "transition-all ease-in-out duration-300",
           isMobile && "left-0 w-full"
         )}
+        style={{
+          left: isCollapsed ? "60px" : "240px",
+        }}
       >
         {!!params.documentId ? (
           <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />

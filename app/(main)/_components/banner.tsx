@@ -40,7 +40,7 @@ export const Banner = ({ documentId }: BannerProps) => {
   };
 
   return (
-    <div className="w-full bg-rose-500 text-center text-white p-2 text-sm flex items-center gap-x-2 justify-center">
+    <div className="w-full bg-rose-500 text-center text-white p-2 text-sm flex items-center gap-x-2 justify-center relative z-[99998]">
       <p className="font-medium">This page is in trash</p>
       <div className="flex items-center gap-x-2">
         <Button
