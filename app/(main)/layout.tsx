@@ -27,6 +27,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
+   
     <ResizablePanelGroup direction="horizontal" className="min-h-screen">
       <ResizablePanel
         defaultSize={20}
