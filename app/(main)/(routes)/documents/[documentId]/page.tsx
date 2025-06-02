@@ -4,17 +4,14 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { Toolbar } from "@/components/toolbar";
-// import { Editor } from "@/components/editor";
+import { useParams } from "next/navigation";
+import { Cover } from "@/components/cover";
 
-interface DocumentIdPageProps {
-  params: {
-    documentId: Id<"documents">;
-  };
-}
 
-const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
+const DocumentIdPage = () => {
+  const params = useParams();
   const document = useQuery(api.documents.getById, {
-    documentId: params.documentId,
+    documentId: params.documentId as Id<"documents">,
   });
 
   if (document === undefined) {
@@ -33,6 +30,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
 
   return (
     <div className="h-full flex-1 flex flex-col">
+        <Cover url = {document.coverImage}/>
       <Toolbar initialData={document} />
     </div>
   );
