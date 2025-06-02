@@ -10,10 +10,11 @@ import {
   Moon,
   Sun,
   Laptop,
+  MenuIcon,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useMediaQuery } from "usehooks-ts";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/clerk-react";
 import { UserItem } from "./user-item";
@@ -24,12 +25,14 @@ import { Item } from "./item";
 import { api } from "@/convex/_generated/api";
 import { useTheme } from "next-themes";
 import { TrashBox } from "./trash-box";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useSearch } from "@/hooks/use-search";
 import { useSettings } from "@/hooks/use-settings";
-
-
-
+import { Navbar } from "./navbar";
 
 interface NavItem {
   icon: React.ReactNode;
@@ -40,14 +43,39 @@ interface NavItem {
 
 const Navigation = () => {
   const pathname = usePathname();
+  const params = useParams();
   const router = useRouter();
-  const { user } = useUser();
+  //   const { user } = useUser();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const searchStore = useSearch();
   const settings = useSettings();
+
+  const navbarRef = useRef<HTMLDivElement>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [isResetting, setIsResetting] = useState(false);
+
+  useEffect(() => {
+    if (navbarRef.current) {
+      navbarRef.current.addEventListener("scroll", handleScroll);
+    }
+  }, []);
+  const handleScroll = () => {
+    if (navbarRef.current) {
+      const { scrollTop } = navbarRef.current;
+      setIsScrolling(scrollTop > scrollPosition);
+      setScrollPosition(scrollTop);
+    }
+  };
+
+  useEffect(() => {
+    if (navbarRef.current) {
+      navbarRef.current.addEventListener("scroll", handleScroll);
+    }
+  }, []);
   // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
@@ -60,7 +88,7 @@ const Navigation = () => {
   };
 
   const onSettings = () => {
-    settings.onOpen();  
+    settings.onOpen();
   };
 
   const handleCreate = () => {
@@ -104,6 +132,14 @@ const Navigation = () => {
       setTheme("dark");
     }
   };
+
+  const resetWidth = () => {
+    setIsCollapsed(false);
+    setIsResetting(true);
+    setTimeout(() => {
+      setIsResetting(false);
+    }, 300);
+  }
 
   return (
     <div className="h-full flex flex-col bg-[#1F1F1F] dark:bg-[#171717]">
@@ -183,17 +219,40 @@ const Navigation = () => {
                 icon={<PlusCircle className="h-4 w-4" />}
                 onClick={handleCreate}
               />
-            <Popover>
+              <Popover>
                 <PopoverTrigger className="w-full mt-4">
-                    <Item label="Trash" icon={<Trash className="h-4 w-4" />}/>
-                <PopoverContent side={isMobile? "bottom" : "right"}>
+                  <Item label="Trash" icon={<Trash className="h-4 w-4" />} />
+                  <PopoverContent side={isMobile ? "bottom" : "right"}>
                     <TrashBox />
-                </PopoverContent>
+                  </PopoverContent>
                 </PopoverTrigger>
-            </Popover>
+              </Popover>
             </div>
           </div>
         </div>
+      </div>
+      <div
+        ref={navbarRef}
+        className={cn(
+          "absolute top-0 left-60 w-[calc(100%-240px)]",
+          isScrolling && "shadow-sm",
+          isResetting && "tarnsition-all ease-in-out duration-300",
+          isMobile && "left-0 w-full"
+        )}
+      >
+        {!!params.documentId ? (
+          <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+        ) : (
+          <nav className="bg-transparent px-4 py-2">
+            {isCollapsed && (
+              <MenuIcon
+                onClick={() => setIsCollapsed(false)}
+                className="h-6 w-6 text-white"
+                role="button"
+              />
+            )}
+          </nav>
+        )}
       </div>
       <div className="mt-auto p-4">
         <div className="space-y-2">
